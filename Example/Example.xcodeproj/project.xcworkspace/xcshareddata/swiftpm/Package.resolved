@@ -1,0 +1,15 @@
+{
+  "originHash" : "aeacbc1903eb53e1a839d0945e69dc4c5eef56f685235522130ae0bda5ad37bb",
+  "pins" : [
+    {
+      "identity" : "wwsimplifiedmusicalnotationplayer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/William-Weng/WWSimplifiedMusicalNotationPlayer",
+      "state" : {
+        "revision" : "6546432e1d4e423894d23aa286e0a3f8a6bced43",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

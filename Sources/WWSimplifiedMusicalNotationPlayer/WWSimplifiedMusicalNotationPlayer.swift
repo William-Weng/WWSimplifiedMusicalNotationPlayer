@@ -6,32 +6,19 @@
 //
 
 import AVFoundation
+import WWTwelveEqualTemperament
 
 // MARK: - 簡譜播放器
 open class WWSimplifiedMusicalNotationPlayer {
     
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()
-    private let pedalOnDuration = 3.0
 
     private var isPedalOn = false
-    private var noteDuration = 0.3
-    private var noteFrequencyTable: [String: CGFloat] = [:]
+    private var noteFrequencyTable: [String: Double] = [:]
     private var lastNoteBuffer: AVAudioPCMBuffer?
     
-    public init() {
-        
-        initNoteFrequencyTable()
-        
-        engine.attach(player)
-        engine.connect(player, to: engine.mainMixerNode, format: nil)
-        
-        do {
-            try engine.start()
-        } catch {
-            print("無法啟動音頻引擎: \(error)")
-        }
-    }
+    public init() { initSetting() }
 }
 
 // MARK: - 公開函式
@@ -41,22 +28,24 @@ public extension WWSimplifiedMusicalNotationPlayer {
     /// - Parameters:
     ///   - note: [簡譜音符](https://zh.soundoflife.com/blogs/experiences/numbered-musical-notation)
     ///   - duration: 播放時間
+    ///   - pedalOnDuration: 踏板延音持續時間
     /// - Returns: Result<Bool, Error>
-    func playNote(_ note: String, duration: Double) -> Result<Bool, Error> {
-        
+    func playNote(_ note: String, duration: Double = 0.35, pedalOnDuration: Double = 3.0) -> Result<Bool, Error> {
         guard let frequency = noteFrequencyTable[note] else { return .failure(NotationError.noteNotInTable) }
-        return playNote(frequency: frequency, duration: duration)
+        return playNote(frequency: frequency, duration: duration, pedalOnDuration: pedalOnDuration)
     }
     
     /// [播放頻率聲音](https://youtu.be/nX8ZmcIJQhU)
     /// - Parameters:
     ///   - frequency: [頻率](https://tmrc.tiec.tp.edu.tw/HTML/RSR20081124231639YLZ/content/wave2-1-2.html)
-    ///   - duration: [播放時間](https://kkbox.github.io/kkbox-ios-dev/audio_apis/avaudioengine.html)
-    func playNote(frequency: CGFloat, duration: Double) -> Result<Bool, Error> {
+    ///   - duration: [單音持續時間](https://kkbox.github.io/kkbox-ios-dev/audio_apis/avaudioengine.html)
+    ///   - pedalOnDuration: 踏板延音持續時間
+    /// - Returns: Result<Bool, Error>
+    func playNote(frequency: CGFloat, duration: Double = 0.35, pedalOnDuration: Double = 3.0) -> Result<Bool, Error> {
         
         let outputFormat = audioFormatMaker(engine, forBus: 0)
         let totalDuration = isPedalOn ? duration + pedalOnDuration : duration
-                
+        
         guard let standardFormat = standardFormatMaker(outputFormat) else { return .failure(NotationError.audioFormat) }
         guard let buffer = audioPCMBufferMaker(audioFormat: standardFormat, duration: totalDuration) else { return .failure(NotationError.audioPCMBuffer) }
         
@@ -73,14 +62,16 @@ public extension WWSimplifiedMusicalNotationPlayer {
     /// [播放簡譜](https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/使用-ai-製作的-simplepianosynthesizer-彈鋼琴-4657a94e14a1)
     /// - Parameters:
     ///   - song: 簡譜
+    ///   - duration: 單音持續時間
+    ///   - pedalOnDuration: 踏板延音持續時間
     ///   - result: ((Result<Bool, Error>) -> Void)?
-    func playSong(_ song: String, result: ((Result<Bool, Error>) -> Void)? = nil)  {
+    func playSong(_ song: String, duration: Double = 0.35, pedalOnDuration: Double = 3.0, result: ((Result<Bool, Error>) -> Void)? = nil)  {
         
-        let infos = parseNotation(song)
+        let infos = parseNotation(song, duration: duration)
         
         for info in infos {
             
-            let playResult = playNote(frequency: info.frequency, duration: info.duration)
+            let playResult = playNote(frequency: info.frequency, duration: info.duration, pedalOnDuration: pedalOnDuration)
             
             switch playResult {
             case .failure(_): result?(.failure(NotationError.playNote(info.note)))
@@ -91,7 +82,7 @@ public extension WWSimplifiedMusicalNotationPlayer {
         }
     }
     
-    /// 踏板控制方法 (釋放踏板時清除上一個音符緩衝區)
+    /// [踏板控制方法 (釋放踏板時清除上一個音符緩衝區)](https://bideyuanli.com/声乐基础理论/音高)
     /// - Parameter on: Bool
     func pedal(on: Bool) {
         isPedalOn = on
@@ -102,31 +93,24 @@ public extension WWSimplifiedMusicalNotationPlayer {
 // MARK: - 小工具
 private extension WWSimplifiedMusicalNotationPlayer {
     
-    /// 初始化音符頻率對照表
-    func initNoteFrequencyTable() {
+    /// 初始化設定
+    func initSetting() {
         
-        guard let dictionary = readNoteFrequencyFile("NoteFrequency.json"),
-              let table = dictionary["NoteFrequency"]
-        else {
-            return
+        initNoteFrequencyTable()
+        
+        engine.attach(player)
+        engine.connect(player, to: engine.mainMixerNode, format: nil)
+        
+        do {
+            try engine.start()
+        } catch {
+            print("無法啟動音頻引擎: \(error)")
         }
-        
-        noteFrequencyTable = table
     }
     
-    /// 讀取音符頻率對照表
-    /// - Parameter filename: 檔案名稱
-    /// - Returns: [String: [String: CGFloat]]?
-    func readNoteFrequencyFile(_ filename: String) -> [String: [String: CGFloat]]? {
-        
-        guard let url = Bundle.module.url(forResource: filename, withExtension: nil),
-              let text = FileManager.default._readText(from: url),
-              let dictionary: [String: [String: CGFloat]] = text._dictionary(encoding: .utf8)
-        else {
-            return nil
-        }
-        
-        return dictionary
+    /// 初始化音符頻率對照表
+    func initNoteFrequencyTable() {
+        noteFrequencyTable = WWTwelveEqualTemperament.shared.pianoTable(type: .number)
     }
     
     /// 產生AVAudioFormat
@@ -166,7 +150,8 @@ private extension WWSimplifiedMusicalNotationPlayer {
     ///   - audioFormat: [AVAudioFormat](https://youtu.be/d8ge7QmZbcc)
     ///   - frequency: CGFloat
     ///   - duration: Double
-    func envelope(buffer: AVAudioPCMBuffer, audioFormat: AVAudioFormat, frequency: CGFloat, duration: Double) {
+    ///   - pedalOnDuration: Double
+    func envelope(buffer: AVAudioPCMBuffer, audioFormat: AVAudioFormat, frequency: CGFloat, duration: Double, pedalOnDuration: Double = 3.0) {
         
         let frameCount = AVAudioFrameCount(audioFormat.sampleRate * duration)
 
@@ -226,9 +211,11 @@ private extension WWSimplifiedMusicalNotationPlayer {
     }
         
     /// 解析簡譜 => (頻率, 持續時間)
-    /// - Parameter notation: 音符
     /// - Returns: [(CGFloat, Double)]
-    func parseNotation(_ notation: String) -> [NoteInformation] {
+    /// - Parameters:
+    ///   - notation: 音符
+    ///   - duration: 持續時間
+    func parseNotation(_ notation: String, duration: Double) -> [NoteInformation] {
         
         let notes = notation.components(separatedBy: .whitespaces)
         
@@ -236,40 +223,20 @@ private extension WWSimplifiedMusicalNotationPlayer {
         
         for note in notes {
             
+            var duration = duration
             var noteKey = note
-            var duration = noteDuration
             var info: NoteInformation = (note, 0, 0)
             
             // 處理延長音符
-            if note.hasSuffix("-") {
+            if note.hasSuffix("~") {
                 noteKey = String(note.dropLast())
                 duration *= 2
             }
-
-            // 處理升降記號
+            
+            // 記錄音頻 / 持續時間
             if let frequency = noteFrequencyTable[noteKey] {
-                
                 info.frequency = frequency
                 info.duration = duration
-                                
-            } else if noteKey.count > 1 {
-                
-                let baseNote = String(noteKey.prefix(1))
-                let modifier = String(noteKey.suffix(1))
-                
-                if let baseFrequency = noteFrequencyTable[baseNote] {
-                    
-                    let modifiedFrequency: CGFloat
-                    
-                    switch modifier {
-                    case "#": modifiedFrequency = baseFrequency * pow(2, 1/12)
-                    case "b": modifiedFrequency = baseFrequency / pow(2, 1/12)
-                    default: continue
-                    }
-                    
-                    info.frequency = modifiedFrequency
-                    info.duration = duration
-                }
             }
             
             result.append(info)

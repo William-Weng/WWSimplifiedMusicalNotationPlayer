@@ -12,16 +12,16 @@
 
 ```bash
 dependencies: [
-    .package(url: "https://github.com/William-Weng/WWSimplifiedMusicalNotationPlayer.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/William-Weng/WWSimplifiedMusicalNotationPlayer.git", .upToNextMajor(from: "1.0.1"))
 ]
 ```
 
 ### [Function - 可用函式](https://ezgif.com/video-to-webp)
 |函式|功能|
 |-|-|
-|playNote(_:duration:)|播放簡譜音符|
-|playNote(frequency:duration:)|播放頻率聲音|
-|playSong(_ song:result:)|播放簡譜|
+|playNote(_:duration:pedalOnDuration:)|播放簡譜音符|
+|playNote(frequency:duration:pedalOnDuration:)|播放頻率聲音|
+|playSong(_ song:duration:pedalOnDuration:result:)|播放簡譜|
 |pedal(on:)|踏板控制方法|
 
 ## Example
@@ -34,7 +34,7 @@ final class ViewController: UIViewController {
     @IBOutlet var notes: [UIView]!
     
     private let player = WWSimplifiedMusicalNotationPlayer()
-    private let notation = "1 1 5 5 6 6 5 0 4 4 3 3 2 2 1 0 5 5 4 4 3 3 2 0 5 5 4 4 3 3 2 0 1 1 5 5 6 6 5 0 4 4 3 3 2 2 1-"
+    private let notation = "1 1 5 5 6 6 5 0 4 4 3 3 2 2 1 0 5 5 4 4 3 3 2 0 5 5 4 4 3 3 2 0 1 1 5 5 6 6 5 0 4 4 3 3 2 2 1~"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,7 +59,7 @@ private extension ViewController {
     
     @objc func playNote(_ tap: UITapGestureRecognizer) {
         guard let note = tap.view?.tag else { return }
-        _ = player.playNote("\(note)", duration: 0.3)
+        _ = player.playNote("\(note)")
     }
 }
 ```

@@ -11,8 +11,11 @@ let package = Package(
     products: [
         .library(name: "WWSimplifiedMusicalNotationPlayer", targets: ["WWSimplifiedMusicalNotationPlayer"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/William-Weng/WWTwelveEqualTemperament", from: "1.0.2")
+    ],
     targets: [
-        .target(name: "WWSimplifiedMusicalNotationPlayer", resources: [.process("Material/NoteFrequency.json")]),
+        .target(name: "WWSimplifiedMusicalNotationPlayer", dependencies: ["WWTwelveEqualTemperament"]),
 
     ],swiftLanguageVersions: [
         .v5

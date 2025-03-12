@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		817113FB2D7EEBE70055E6D4 /* WWSimplifiedMusicalNotationPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 817113FA2D7EEBE70055E6D4 /* WWSimplifiedMusicalNotationPlayer */; };
+		8170D9312D8120C200AA965C /* WWSimplifiedMusicalNotationPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 8170D9302D8120C200AA965C /* WWSimplifiedMusicalNotationPlayer */; };
 		817567FC2CA2C2B400B24577 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817567FB2CA2C2B400B24577 /* AppDelegate.swift */; };
 		817568002CA2C2B400B24577 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817567FF2CA2C2B400B24577 /* ViewController.swift */; };
 		817568032CA2C2B400B24577 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 817568012CA2C2B400B24577 /* Main.storyboard */; };
 		817568052CA2C2B500B24577 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 817568042CA2C2B500B24577 /* Assets.xcassets */; };
 		817568082CA2C2B500B24577 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 817568062CA2C2B500B24577 /* LaunchScreen.storyboard */; };
+		817D71462D813DE000FD089A /* WWSimplifiedMusicalNotationPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 817D71452D813DE000FD089A /* WWSimplifiedMusicalNotationPlayer */; };
+		81FF7C752D81379A007B15E5 /* WWSimplifiedMusicalNotationPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 81FF7C742D81379A007B15E5 /* WWSimplifiedMusicalNotationPlayer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,7 +32,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				817113FB2D7EEBE70055E6D4 /* WWSimplifiedMusicalNotationPlayer in Frameworks */,
+				81FF7C752D81379A007B15E5 /* WWSimplifiedMusicalNotationPlayer in Frameworks */,
+				817D71462D813DE000FD089A /* WWSimplifiedMusicalNotationPlayer in Frameworks */,
+				8170D9312D8120C200AA965C /* WWSimplifiedMusicalNotationPlayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,7 +135,9 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				817113FA2D7EEBE70055E6D4 /* WWSimplifiedMusicalNotationPlayer */,
+				8170D9302D8120C200AA965C /* WWSimplifiedMusicalNotationPlayer */,
+				81FF7C742D81379A007B15E5 /* WWSimplifiedMusicalNotationPlayer */,
+				817D71452D813DE000FD089A /* WWSimplifiedMusicalNotationPlayer */,
 			);
 			productName = Example;
 			productReference = 817567F82CA2C2B400B24577 /* Example.app */;
@@ -162,7 +168,7 @@
 			);
 			mainGroup = 817567EF2CA2C2B400B24577;
 			packageReferences = (
-				817113F92D7EEBE70055E6D4 /* XCRemoteSwiftPackageReference "WWSimplifiedMusicalNotationPlayer" */,
+				817D71442D813DE000FD089A /* XCRemoteSwiftPackageReference "WWSimplifiedMusicalNotationPlayer" */,
 			);
 			productRefGroup = 817567F92CA2C2B400B24577 /* Products */;
 			projectDirPath = "";
@@ -427,20 +433,28 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		817113F92D7EEBE70055E6D4 /* XCRemoteSwiftPackageReference "WWSimplifiedMusicalNotationPlayer" */ = {
+		817D71442D813DE000FD089A /* XCRemoteSwiftPackageReference "WWSimplifiedMusicalNotationPlayer" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/William-Weng/WWSimplifiedMusicalNotationPlayer";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 1.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		817113FA2D7EEBE70055E6D4 /* WWSimplifiedMusicalNotationPlayer */ = {
+		8170D9302D8120C200AA965C /* WWSimplifiedMusicalNotationPlayer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 817113F92D7EEBE70055E6D4 /* XCRemoteSwiftPackageReference "WWSimplifiedMusicalNotationPlayer" */;
+			productName = WWSimplifiedMusicalNotationPlayer;
+		};
+		817D71452D813DE000FD089A /* WWSimplifiedMusicalNotationPlayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 817D71442D813DE000FD089A /* XCRemoteSwiftPackageReference "WWSimplifiedMusicalNotationPlayer" */;
+			productName = WWSimplifiedMusicalNotationPlayer;
+		};
+		81FF7C742D81379A007B15E5 /* WWSimplifiedMusicalNotationPlayer */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = WWSimplifiedMusicalNotationPlayer;
 		};
 /* End XCSwiftPackageProductDependency section */
